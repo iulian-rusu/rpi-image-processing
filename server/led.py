@@ -18,5 +18,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         except ConnectionResetError:
             break
 
-GPIO.output(37,0)
+GPIO.output(37, 0)
 GPIO.cleanup()
