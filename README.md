@@ -21,10 +21,23 @@ A web server running on a RaspberryPi that uses a webcam and OpenCV to detect an
 # Story
 The project uses the power of modern image processing libraries in combination with the performance and portability of a RaspberryPi board to stream a live drawing done by motion tracking. 
 
-The application mainly uses `python` for image processing and server logic. Using `opencv`, we extract the static background to determine which parts of a frame have changed. Then, by calculating the convex hull of the extracted set of points, we can track any desired point and plot its trajectory on a live graph, displayed in any browser that accesses the server's URL. 
+The application mainly uses `python` for image processing and server logic. Using `opencv`, we extract the static background to determine which parts of a frame have changed. To do this, we memorize a frame of the background and compute the difference between the current picture and the original empty background, resulting in a set of points.
+
+<img src="images/extracted_bg.png" width="300" alt="extracted">
+
+To minimize noise and errors, we apply a blur and a binary threshold on the image. The result is a white foreground on a black background.
+
+<img src="images/thresholded.png" width="300" alt="threshold">
+
+The next step is to calculate the convex hull of the white foreground, giving us a contour of the tracked object. Then, using this contour, we can track any point on it and plot its trajectory.
+
+<img src="images/hull.png" width="300" alt="hull">
+
+The movement tracker script then sends draw commands to the main server script using sockets. These command look like `move x, y` and tell the server how to draw the tracked path. The server creates a virtual image using `Pillow`, and then shows it in the web browser using `Flask`.
+
+<img src="images/gui.png" alt="cover"> 
 
 In the end, the resulting drawing can be sent to a specified email address.
-<img src="images/gui.png" alt="cover"> 
 
 # Run It Locally
 1. [Set up your RaspberryPi platform](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up) and make sure it has access to a web camera
@@ -51,7 +64,7 @@ The `camera.py` script launches a `led.py` process which is responsible for cont
 The last microservice is `email_sender.py` which is also started by the main process when the user wants to send an email with the drawing output. The email is sent using `smtplib`.
 
 ## Client-side
-The frontend of the project uses built-in `flask` static templates to render a view in the browser. The application uses some simple `JavaScript` to make *AJAX* requests to the server and to dynamically draw the received image on a `<canvas>` element.
+The frontend of the project uses built-in `Flask` static templates to render a view in the browser. The application uses some simple `JavaScript` to make *AJAX* requests to the server and to dynamically draw the received image on a `<canvas>` element.
 
 # Code samples
 Here is how we implemented some of the key features of the projects:
