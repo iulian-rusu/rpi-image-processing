@@ -46,7 +46,7 @@ In the end, the resulting drawing can be sent to a specified email address.
 3. `$ cd server` to move into the source directory
 4. `$ python3 -m venv env` to create a virtual environment
 5. `$ source env/bin/activate` to activate the virtual environment
-6. `$ pip3 install -r requirements.txt` to install all nevessary dependencies.
+6. `$ pip3 install -r requirements.txt` to install all necessary dependencies.
 
     This will install:
     * `Flask` version 1.1.2
